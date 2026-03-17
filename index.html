@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>生存訊號 Survival Signal | 系統模擬</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="device-frame">
+    <div class="status-bar">
+        <span id="clock">14:00</span>
+        <span>5G 📶 100% 🔋</span>
+    </div>
+
+    <div class="header">
+        <button class="back-btn" id="backBtn" onclick="logout()">◀ 登出</button>
+        <h1 id="headerTitle">系統登入</h1>
+        <p id="headerSub">Survival Signal Network</p>
+    </div>
+
+    <div id="screen-login" class="screen active" style="justify-content: center;">
+        <button class="btn btn-role" onclick="login('public-main')">
+            📱 一般民眾端
+            <span>健康回報 / 請求救援</span>
+        </button>
+        <button class="btn btn-role" onclick="login('medical')">
+            🏥 醫療指揮端
+            <span>任務指派 / 資源調度</span>
+        </button>
+        <button class="btn btn-role" onclick="login('command')">
+            🌐 國家戰情端
+            <span>AI 預測 / 總體監控</span>
+        </button>
+    </div>
+
+    <div id="screen-public-main" class="screen">
+        <div class="timer-box">
+            <div style="font-size: 12px; color: #aaa;">下次強制回報倒數</div>
+            <div style="font-size: 32px; font-weight: bold; color: #4da6ff; margin-top: 5px;" id="countdown">05:59:59</div>
+        </div>
+        <button class="btn btn-green" onclick="resetTimer('安全已記錄，倒數重置')">🟢 我目前安全</button>
+        <button class="btn btn-yellow" onclick="resetTimer('輕症已記錄，請居家觀察')">🟡 輕微不適</button>
+        <button class="btn btn-red" onclick="navTo('public-symptoms')">🔴 緊急警報<span>出現嚴重症狀，請求分配醫療資源</span></button>
+    </div>
+
+    <div id="screen-public-symptoms" class="screen">
+        <h3 style="color: var(--alert-red); margin-top: 0;">填寫變異症狀</h3>
+        <label class="symptom-item"><input type="checkbox" class="symp-check"> 持續高燒 (>39°C)</label>
+        <label class="symptom-item"><input type="checkbox" class="symp-check"> 嚴重呼吸困難</label>
+        <label class="symptom-item"><input type="checkbox" class="symp-check"> 意識模糊 / 昏厥</label>
+        <button class="btn btn-red" style="margin-top: auto;" onclick="submitSymptoms()">送出並由 AI 評估</button>
+        <button class="btn btn-role" onclick="navTo('public-main')">取消</button>
+    </div>
+
+    <div id="screen-public-loading" class="screen" style="justify-content: center; text-align: center;">
+        <div class="radar"></div>
+        <h3 style="color: var(--primary);">量子演算法分配中</h3>
+        <p style="color: #888; font-size: 14px;" id="loading-text">正在交叉比對全國病床資源...</p>
+    </div>
+
+    <div id="screen-public-result" class="screen" style="justify-content: center; text-align: center;">
+        <div style="font-size: 50px; margin-bottom: 10px;">🚑</div>
+        <h2 style="color: var(--alert-red);">醫療資源已鎖定</h2>
+        <div class="info-box">
+            優先級別：<strong style="color: var(--alert-red);">Code Red (極高)</strong><br>
+            分派醫院：第三野戰醫院<br>
+            接駁車輛：救護車 #TPE-402<br>
+            預估抵達：<strong style="color: #ffb300;">12 分鐘</strong>
+        </div>
+        <button class="btn btn-role" onclick="navTo('public-main')">返回主頁面</button>
+    </div>
+
+    <div id="screen-medical" class="screen">
+        <div class="status-indicator">
+            <span style="color: var(--safe-green);">🔒 端到端加密連線中</span>
+            <span>北區第 4 區塊</span>
+        </div>
+        <div class="map-container">
+            <div class="map-dot dot-red" id="med-target"></div>
+            <div class="map-dot dot-yellow"></div>
+            <div class="map-dot dot-green"></div>
+        </div>
+        <div class="data-grid">
+            <div class="data-card"><h4>待處理 Code Red</h4><p id="med-tasks" style="color: var(--alert-red);">2</p></div>
+            <div class="data-card"><h4>可用救護車輛</h4><p id="med-ambs">5</p></div>
+        </div>
+        <button class="btn btn-role" onclick="simulateDispatch()">🚑 派遣最近支援</button>
+    </div>
+
+    <div id="screen-command" class="screen">
+        <div class="map-container" style="height: 150px;">
+            <div class="heatmap-overlay" id="heatmap" style="display: block;"></div>
+        </div>
+        <div class="data-grid">
+            <div class="data-card highlight"><h4>全國感染率</h4><p>12.4%</p></div>
+            <div class="data-card"><h4>R0 預測值</h4><p>2.1</p></div>
+            <div class="data-card"><h4>物資儲備</h4><p>88%</p></div>
+            <div class="data-card"><h4>社會穩定度</h4><p>危急</p></div>
+        </div>
+        <button class="btn btn-red" onclick="showToast('已啟動最高等級封鎖建議')">⚠️ 發布區域封鎖指令</button>
+    </div>
+
+    <div id="toast">訊息已傳送</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
